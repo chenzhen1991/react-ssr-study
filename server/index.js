@@ -5,6 +5,7 @@ import express from 'express'
 import App from '../src/App'
 
 const app = express()
+app.use(express.static('public'))
 
 app.get('/', (req, res) => {
     // const Page = <App title='努力学习'></App>
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
             <body>
                 <div id="root">${content}</div>
             </body>
+            <script src="/bundle.js"></script>
         </html>
     `)
 })
