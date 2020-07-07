@@ -1,5 +1,9 @@
 import React from 'react'
 import ReactDom from 'react-dom'
+import {BrowserRouter} from 'react-router-dom'
 import App from '../src/App'
 
-ReactDom.hydrate(App, document.getElementById('root'))
+const Page = <BrowserRouter>
+    {App}
+</BrowserRouter>;
+ReactDom.hydrate(Page, document.getElementById('root'))
