@@ -5,8 +5,9 @@ import express from 'express'
 import {StaticRouter} from 'react-router-dom'
 import {Provider} from 'react-redux'
 import routes from '../src/App'
-import store from '../src/store/store'
+import {getServerStore} from '../src/store/store'
 
+const store = getServerStore()
 const app = express()
 app.use(express.static('public'))
 
@@ -67,7 +68,7 @@ app.get('*', (req, res) => {
                  <div id="root">${content}</div>
              </body>
              <script>
-                window.__context = ${}
+                window.__context = ${JSON.stringify(store.getState())}
              </script>
              <script src="/bundle.js"></script>
          </html>

@@ -11,11 +11,12 @@ const reducer = combineReducers({
 // const store = createStore(reducer, applyMiddleware(thunk))
 
 // export default store
-export const getClientStore = () => {
+export const getServerStore = () => {
+    // 通过server的dispatch来获取和充实
     return createStore(reducer, applyMiddleware(thunk))
 }
 
-export const getServerStore = () => {
+export const getClientStore = () => {
     //服务端用的
     // 通过window.__context来获取数
     const defaultState = window.__context ? window.__content: {}
