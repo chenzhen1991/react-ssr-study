@@ -2,8 +2,9 @@
 import React from 'react'
 import {renderToString} from 'react-dom/server'
 import express from 'express'
-import {StaticRouter} from 'react-router-dom'
+import {StaticRouter, matchPath, Route} from 'react-router-dom'
 import {Provider} from 'react-redux'
+import proxy from 'http-proxy-middleware'
 import routes from '../src/App'
 import {getServerStore} from '../src/store/store'
 
@@ -28,11 +29,12 @@ app.use(express.static('public'))
 //         </html>
 //     `)
 // })
-
+// 客户端转发来的api开头的请求
+// app.use('/api', proxy({target: 'http://localhost:9091', changeOrigin: true}));
 // 路由
 app.get('*', (req, res) => {
     // 存储网络请求
-    const promise = []
+    const promises = []
     // routes.some(route => {
     //     const match = matchPath(req.path, route)
     //     if(match) promise.push(route.loadData(matcha))
@@ -41,15 +43,20 @@ app.get('*', (req, res) => {
     //  根据上面的some调整
     routes.some(route => {
         const match = matchPath(req.path, route)
-        if(matcha) {
+        if(match) {
             const {loadData} = route.component
             if(loadData){
-                promise.push(route.loadData(store))
+                // 包装后
+                // 规避报错 可以考虑加日志
+                const promise = new Promise((resolve, reject) => {
+                    loadData(store).then(resolve).catch(resolve)
+                })
+                promises.push(promise)
             }
         }
     })
     // 等待所有网络请求结束再渲染
-    Promise.all(promise).then(() => {
+    Promise.all(promises).then(() => {
         // 获取根据路由渲染出的组件，并且拿到loadData方法，获取数据
         const content = renderToString(
             <Provider store={store}>
@@ -73,6 +80,8 @@ app.get('*', (req, res) => {
              <script src="/bundle.js"></script>
          </html>
      `)
+    }).catch(()=>{
+        res.send('页面报错500')
     })
 })
 app.listen(9093, () => {

@@ -15,6 +15,8 @@ import React from 'react'
 import {Route} from 'react-router-dom'
 import Index from './container/Index'
 import About from "./container/About"
+import User from "./container/User"
+import user from "./store/user";
 // export default (
 //     <div>
 //         <Route path="/" exact component={Index}></Route>
@@ -27,7 +29,7 @@ export default [
     {
         path: '/',
         component: Index,
-        // loadData: Index.loadData,
+        loadData: Index.loadData,
         exact: true,
         key: 'index'
     },
@@ -36,5 +38,12 @@ export default [
         component: About,
         exact: true,
         key: 'about'
+    },
+    {
+        path:'/user',
+        loadData: User.loadData,
+        component: User,
+        exact: true,
+        key: 'user'
     }
 ]
